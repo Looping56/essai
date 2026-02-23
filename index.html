@@ -1,13 +1,3 @@
-// Sécurité : Redirige vers la connexion si le membre n'est pas identifié
-        if (!isset($_SESSION['membre_id'])) {
-            header('Location: connexion_membre.php');
-        exit;
-        }
-
-// Récupération de la configuration (Ouvert/Fermé) depuis SQL
-$config = $pdo->query("SELECT cle, valeur FROM config_systeme")->fetchAll(PDO::FETCH_KEY_PAIR);
-$nom_membre = $_SESSION['membre_nom'];
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -125,3 +115,4 @@ $nom_membre = $_SESSION['membre_nom'];
 </body>
 
 </html>
+
