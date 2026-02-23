@@ -21,7 +21,22 @@
         </div>
     </div>
     <script>
-        document.getElementById('welcome').innerText = "Bonjour, " + localStorage.getItem('user');
+       <div class="container">
+    <h3>Bonjour, <span id="userNameDisplay"></span> !</h3>
+    <a href="logout.html" style="color: #d0011b; text-decoration: none; font-weight: bold; display: block; margin-top: 30px; text-align: center;">
+        ✖ Se déconnecter
+    </a>
+</div>
+
+    // Récupérer le nom pour l'affichage
+    const user = localStorage.getItem('user_lego');
+    if (!user) {
+        // Sécurité : si pas de nom, on renvoie au login
+        window.location.href = 'index.html';
+    } else {
+        document.getElementById('userNameDisplay').innerText = user;
+    }
+ document.getElementById('welcome').innerText = "Bonjour, " + localStorage.getItem('user');
     </script>
 </body>
 </html>
