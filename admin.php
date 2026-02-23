@@ -1,22 +1,3 @@
-// 1. Sécurité : Vérifier si l'admin est connecté
-if (!isset($_SESSION['admin_loge']) || $_SESSION['admin_loge'] !== true) {
-    header('Location: login.php');
-    exit;
-}
-
-// 2. Récupérer les états actuels (Ouvert/Fermé)
-$status = $pdo->query("SELECT * FROM config_systeme")->fetchAll(PDO::FETCH_KEY_PAIR);
-
-// 3. Calculer le total global des pièces commandées (Ta "Prise Totale")
-$total_query = $pdo->query("
-    SELECT p.reference, p.couleur, SUM(c.quantite) as total 
-    FROM commandes c 
-    JOIN pieces p ON c.piece_id = p.id 
-    GROUP BY p.id
-");
-$bilan_global = $total_query->fetchAll();
-
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
