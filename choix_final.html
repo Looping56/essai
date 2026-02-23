@@ -1,101 +1,80 @@
-// 1. Vérifier si la session finale est ouverte
-$stmt = $pdo->query("SELECT valeur FROM config_systeme WHERE cle = 'etat_final'");
-$est_ouvert = $stmt->fetchColumn();
-
-if ($est_ouvert == '0') {
-    die("<div style='text-align:center; padding:50px; font-family:sans-serif;'>
-            <h1>Accès Fermé 🔒</h1>
-            <p>La période de validation finale n'est pas encore ouverte.</p>
-            <a href='index.html'>Retour</a>
-         </div>");
-}
-
-$membre_id = 1; // ID de test
-
-// 2. Récupérer les choix temporaires du membre
-$query = $pdo->prepare("
-    SELECT p.reference, p.couleur, c.quantite, p.image_path 
-    FROM commandes c 
-    JOIN pieces p ON c.piece_id = p.id 
-    WHERE c.membre_id = ? AND c.statut = 'temporaire'
-");
-$query->execute([$membre_id]);
-$mes_choix = $query->fetchAll();
-
-// 3. Traitement de la validation finale
-if (isset($_POST['confirmer_tout'])) {
-    $update = $pdo->prepare("UPDATE commandes SET statut = 'definitif' WHERE membre_id = ?");
-    $update->execute([$membre_id]);
-    echo "<script>alert('Commande validée définitivement !'); window.location.href='index.html';</script>";
-    exit;
-}
-
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Validation Finale - Lego Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validation - Lego Manager</title>
     <style>
-        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
-        .container { max-width: 700px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .warning { background: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ffeeba; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
-        .btn-final { background: #e67e22; color: white; border: none; padding: 15px 25px; border-radius: 6px; cursor: pointer; font-size: 1.1em; width: 100%; margin-top: 20px; }
-        @media print {
-            /* Cache les boutons et les liens à l'impression */
-            .btn-final, a, .warning {
-                display: none !important;
+        :root { --lego-green: #27ae60; --lego-blue: #0055ad; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        
+        .success-card { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            text-align: center; 
+            max-width: 400px; 
+            width: 90%;
         }
-        /* Optimise le tableau pour le papier */
-        body { background: white; padding: 0; }
-        .container { box-shadow: none; border: none; width: 100%; max-width: 100%; }
-        h1 { font-size: 18pt; margin-bottom: 20px; }
+
+        .icon-check { 
+            width: 80px; 
+            height: 80px; 
+            background: var(--lego-green); 
+            color: white; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 40px; 
+            margin: 0 auto 20px; 
+        }
+
+        h2 { color: #333; margin-bottom: 10px; }
+        p { color: #666; line-height: 1.5; margin-bottom: 30px; }
+
+        .btn-home { 
+            display: inline-block;
+            background: var(--lego-blue); 
+            color: white; 
+            text-decoration: none;
+            padding: 12px 30px; 
+            border-radius: 25px; 
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-home:hover { background: #003d7a; transform: scale(1.05); }
+
+        .info-demo {
+            margin-top: 25px;
+            font-size: 0.8rem;
+            color: #999;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Récapitulatif de votre commande 🧾</h1>
+<div class="success-card">
+    <div class="icon-check">✓</div>
+    <h2 id="merci">Merci !</h2>
+    <p>Votre sélection de pièces Lego a été enregistrée avec succès.</p>
     
-    <?html if (empty($mes_choix)): ?>
-        <p>Vous n'avez sélectionné aucune pièce pour le moment.</p>
-        <a href="choix_pieces.html">Aller au catalogue</a>
-    <?html else: ?>
-        <div class="warning">
-            <strong>Attention :</strong> Une fois validée, vous ne pourrez plus modifier votre liste de pièces !
-        </div>
+    <a href="index.html" class="btn-home">Retour à l'accueil</a>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Pièce</th>
-                    <th>Quantité</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?html foreach ($mes_choix as $choix): ?>
-                <tr>
-                    <td>
-                        <strong><?html echo $choix['reference']; ?></strong><br>
-                        <small><?html echo $choix['couleur']; ?></small>
-                    </td>
-                    <td>x <?html echo $choix['quantite']; ?></td>
-                </tr>
-                <?html endforeach; ?>
-            </tbody>
-        </table>
-
-        <form method="POST">
-            <button type="submit" name="confirmer_tout" class="btn-final">Confirmer définitivement ma commande ✅</button>
-        </form>
-    <?html endif; ?>
-    
-    <p style="text-align:center;"><a href="index.html">Retour à l'accueil</a></p>
+    <div class="info-demo">
+        <strong>Note pour le C.A. :</strong><br>
+        Ceci est une maquette interactive. Sur le serveur IONOS, un mail de confirmation sera envoyé automatiquement.
+    </div>
 </div>
 
-</body>
+<script>
+    // On récupère le nom pour personnaliser le message
+    const nom = localStorage.getItem('membre_nom') || 'Membre du CA';
+    document.getElementById('merci').innerText = "Merci " + nom + " !";
+</script>
 
+</body>
 </html>
