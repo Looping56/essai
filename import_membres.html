@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file_membres'])) {
             }
         }
         fclose($handle);
-        echo "<script>alert('Liste des membres mise à jour !'); window.location.href='admin.php';</script>";
+        echo "<script>alert('Liste des membres mise à jour !'); window.location.href='admin.html';</script>";
     }
 }
+
