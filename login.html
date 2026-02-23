@@ -4,7 +4,7 @@ if (isset($_POST['password'])) {
     // Remplace 'admin123' par le mot de passe de ton choix
     if ($_POST['password'] === 'admin123') {
         $_SESSION['admin_loge'] = true;
-        header('Location: admin.php');
+        header('Location: admin.html');
         exit;
     } else {
         $erreur = "Mot de passe incorrect !";
@@ -33,4 +33,5 @@ if (isset($_POST['password'])) {
         <?php if(isset($erreur)) echo "<p style='color:#ff7675'>$erreur</p>"; ?>
     </div>
 </body>
+
 </html>
