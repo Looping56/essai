@@ -2,79 +2,17 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validation - Lego Manager</title>
-    <style>
-        :root { --lego-green: #27ae60; --lego-blue: #0055ad; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        
-        .success-card { 
-            background: white; 
-            padding: 40px; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            text-align: center; 
-            max-width: 400px; 
-            width: 90%;
-        }
-
-        .icon-check { 
-            width: 80px; 
-            height: 80px; 
-            background: var(--lego-green); 
-            color: white; 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 40px; 
-            margin: 0 auto 20px; 
-        }
-
-        h2 { color: #333; margin-bottom: 10px; }
-        p { color: #666; line-height: 1.5; margin-bottom: 30px; }
-
-        .btn-home { 
-            display: inline-block;
-            background: var(--lego-blue); 
-            color: white; 
-            text-decoration: none;
-            padding: 12px 30px; 
-            border-radius: 25px; 
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        .btn-home:hover { background: #003d7a; transform: scale(1.05); }
-
-        .info-demo {
-            margin-top: 25px;
-            font-size: 0.8rem;
-            color: #999;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <title>Succès</title>
 </head>
 <body>
-
-<div class="success-card">
-    <div class="icon-check">✓</div>
-    <h2 id="merci">Merci !</h2>
-    <p>Votre sélection de pièces Lego a été enregistrée avec succès.</p>
-    
-    <a href="index.html" class="btn-home">Retour à l'accueil</a>
-
-    <div class="info-demo">
-        <strong>Note pour le C.A. :</strong><br>
-        Ceci est une maquette interactive. Sur le serveur IONOS, un mail de confirmation sera envoyé automatiquement.
+    <div class="container" style="margin-top: 100px;">
+        <div class="card">
+            <h1 style="color: #27ae60;">✓</h1>
+            <h2>Commande enregistrée !</h2>
+            <p>Ceci est une simulation pour le C.A. Sur IONOS, ces données iront en base SQL.</p>
+            <button onclick="window.location.href='index.html'">Retour</button>
+        </div>
     </div>
-</div>
-
-<script>
-    // On récupère le nom pour personnaliser le message
-    const nom = localStorage.getItem('membre_nom') || 'Membre du CA';
-    document.getElementById('merci').innerText = "Merci " + nom + " !";
-</script>
-
 </body>
 </html>
