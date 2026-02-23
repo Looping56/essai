@@ -6,7 +6,7 @@ if ($est_ouvert == '0') {
     die("<div style='text-align:center; padding:50px; font-family:sans-serif;'>
             <h1>Accès Fermé 🔒</h1>
             <p>La période de validation finale n'est pas encore ouverte.</p>
-            <a href='index.php'>Retour</a>
+            <a href='index.html'>Retour</a>
          </div>");
 }
 
@@ -26,7 +26,7 @@ $mes_choix = $query->fetchAll();
 if (isset($_POST['confirmer_tout'])) {
     $update = $pdo->prepare("UPDATE commandes SET statut = 'definitif' WHERE membre_id = ?");
     $update->execute([$membre_id]);
-    echo "<script>alert('Commande validée définitivement !'); window.location.href='index.php';</script>";
+    echo "<script>alert('Commande validée définitivement !'); window.location.href='index.html';</script>";
     exit;
 }
 
@@ -60,10 +60,10 @@ if (isset($_POST['confirmer_tout'])) {
 <div class="container">
     <h1>Récapitulatif de votre commande 🧾</h1>
     
-    <?php if (empty($mes_choix)): ?>
+    <?html if (empty($mes_choix)): ?>
         <p>Vous n'avez sélectionné aucune pièce pour le moment.</p>
-        <a href="choix_pieces.php">Aller au catalogue</a>
-    <?php else: ?>
+        <a href="choix_pieces.html">Aller au catalogue</a>
+    <?html else: ?>
         <div class="warning">
             <strong>Attention :</strong> Une fois validée, vous ne pourrez plus modifier votre liste de pièces !
         </div>
@@ -76,25 +76,26 @@ if (isset($_POST['confirmer_tout'])) {
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($mes_choix as $choix): ?>
+                <?html foreach ($mes_choix as $choix): ?>
                 <tr>
                     <td>
-                        <strong><?php echo $choix['reference']; ?></strong><br>
-                        <small><?php echo $choix['couleur']; ?></small>
+                        <strong><?html echo $choix['reference']; ?></strong><br>
+                        <small><?html echo $choix['couleur']; ?></small>
                     </td>
-                    <td>x <?php echo $choix['quantite']; ?></td>
+                    <td>x <?html echo $choix['quantite']; ?></td>
                 </tr>
-                <?php endforeach; ?>
+                <?html endforeach; ?>
             </tbody>
         </table>
 
         <form method="POST">
             <button type="submit" name="confirmer_tout" class="btn-final">Confirmer définitivement ma commande ✅</button>
         </form>
-    <?php endif; ?>
+    <?html endif; ?>
     
-    <p style="text-align:center;"><a href="index.php">Retour à l'accueil</a></p>
+    <p style="text-align:center;"><a href="index.html">Retour à l'accueil</a></p>
 </div>
 
 </body>
+
 </html>
