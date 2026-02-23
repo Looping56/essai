@@ -1,6 +1,4 @@
-<?php
-session_start();
-require 'db.php';
+
 
 // 1. Sécurité : Vérifier si l'admin est connecté
 if (!isset($_SESSION['admin_loge']) || $_SESSION['admin_loge'] !== true) {
@@ -19,7 +17,7 @@ $total_query = $pdo->query("
     GROUP BY p.id
 ");
 $bilan_global = $total_query->fetchAll();
-?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
