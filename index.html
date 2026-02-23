@@ -80,7 +80,7 @@ $nom_membre = $_SESSION['membre_nom'];
     </div>
 
     <?php if($config['etat_choix'] == '1'): ?>
-        <a href="choix_pieces.php" class="card active">
+        <a href="choix_pieces.html" class="card active">
             <div class="card-icon">🛒</div>
             <div class="card-content">
                 <span class="card-title">Sélection des pièces</span>
@@ -88,7 +88,7 @@ $nom_membre = $_SESSION['membre_nom'];
             </div>
             <span class="badge badge-open">Ouvert</span>
         </a>
-    <?php else: ?>
+    <?html else: ?>
         <div class="card locked">
             <div class="card-icon">🔒</div>
             <div class="card-content">
@@ -97,9 +97,9 @@ $nom_membre = $_SESSION['membre_nom'];
             </div>
             <span class="badge badge-closed">Fermé</span>
         </div>
-    <?php endif; ?>
+    <?html endif; ?>
 
-    <?php if($config['etat_final'] == '1'): ?>
+    <?html if($config['etat_final'] == '1'): ?>
         <a href="choix_final.php" class="card active" style="border-left-color: var(--lego-blue);">
             <div class="card-icon">📋</div>
             <div class="card-content">
@@ -108,7 +108,7 @@ $nom_membre = $_SESSION['membre_nom'];
             </div>
             <span class="badge badge-open">Prêt</span>
         </a>
-    <?php else: ?>
+    <?html else: ?>
         <div class="card locked">
             <div class="card-icon">⏳</div>
             <div class="card-content">
@@ -117,10 +117,11 @@ $nom_membre = $_SESSION['membre_nom'];
             </div>
             <span class="badge badge-closed">Bientôt</span>
         </div>
-    <?php endif; ?>
+    <?html endif; ?>
 
-    <a href="logout.php" class="logout">Déconnexion</a>
+    <a href="logout.html" class="logout">Déconnexion</a>
 </div>
 
 </body>
+
 </html>
