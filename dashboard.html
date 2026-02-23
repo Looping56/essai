@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <title>Dashboard</title>
+</head>
+<body>
+    <header><h1>Dashboard</h1></header>
+    <div class="container">
+        <h3 id="welcome"></h3>
+        <div class="card" style="margin-bottom: 20px; border-left: 5px solid green;">
+            <h4>Session de commande</h4>
+            <p>Statut : 🟢 OUVERT</p>
+            <button onclick="window.location.href='choix.html'">Accéder au catalogue</button>
+        </div>
+        <div class="card" style="opacity: 0.6; border-left: 5px solid gray;">
+            <h4>Validation Finale</h4>
+            <p>Statut : 🔒 FERMÉ</p>
+            <button disabled>Indisponible</button>
+        </div>
+    </div>
+    <script>
+        document.getElementById('welcome').innerText = "Bonjour, " + localStorage.getItem('user');
+    </script>
+</body>
+</html>
