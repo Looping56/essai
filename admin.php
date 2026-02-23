@@ -1,5 +1,3 @@
-
-
 // 1. Sécurité : Vérifier si l'admin est connecté
 if (!isset($_SESSION['admin_loge']) || $_SESSION['admin_loge'] !== true) {
     header('Location: login.php');
