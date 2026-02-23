@@ -2,28 +2,23 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Test CA - Lego Manager</title>
-    <style>
-        body { font-family: sans-serif; background: #2c3e50; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; }
-        .login-card { background: white; padding: 30px; border-radius: 15px; color: #333; text-align: center; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
-        button { background: #d0011b; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <title>Connexion - Lego Demo</title>
 </head>
 <body>
-    <div class="login-card">
-        <h2>Test CA - Identification</h2>
-        <p>Tapez n'importe quel nom pour tester :</p>
-        <input type="text" id="nomMembre" placeholder="Votre Nom">
-        <button onclick="connexion()">Entrer</button>
+    <div class="container" style="margin-top: 100px;">
+        <div class="card">
+            <h2 style="color: var(--lego-red);">LEGO LOGIN</h2>
+            <input type="text" id="username" placeholder="Entrez votre nom">
+            <button onclick="login()">Se connecter</button>
+        </div>
     </div>
-
     <script>
-        function connexion() {
-            let nom = document.getElementById('nomMembre').value;
-            if(nom) {
-                localStorage.setItem('membre_nom', nom); // On simule la session
-                window.location.href = 'choix.html'; // On va vers la page de choix
+        function login() {
+            const name = document.getElementById('username').value;
+            if(name) {
+                localStorage.setItem('user', name);
+                window.location.href = 'dashboard.html';
             }
         }
     </script>
