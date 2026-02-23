@@ -1,0 +1,36 @@
+// Sécurité : Vérifier l'accès admin
+if (!isset($_SESSION['admin_loge'])) {
+    die("Accès refusé.");
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file_pieces'])) {
+    $file = $_FILES['file_pieces']['tmp_name'];
+
+    if (($handle = fopen($file, "r")) !== FALSE) {
+        // Optionnel : Vider le catalogue actuel pour mettre à jour proprement
+        // $pdo->exec("DELETE FROM pieces"); 
+
+        $import_count = 0;
+        
+        // On lit le fichier ligne par ligne
+        while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+            // $data[0] = Référence, $data[1] = Couleur, $data[2] = Image
+            if (isset($data[0], $data[1], $data[2])) {
+                $stmt = $pdo->prepare("INSERT INTO pieces (reference, couleur, image_path) VALUES (?, ?, ?)");
+                $stmt->execute([
+                    trim($data[0]), 
+                    trim($data[1]), 
+                    trim($data[2])
+                ]);
+                $import_count++;
+            }
+        }
+        fclose($handle);
+        
+        // Redirection avec un message de succès
+        echo "<script>alert('$import_count pièces importées avec succès !'); window.location.href='admin.php';</script>";
+    } else {
+        echo "Erreur lors de l'ouverture du fichier.";
+        echo "✅ Catalogue mis à jour avec succès !";
+    }
+}

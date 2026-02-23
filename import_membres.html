@@ -1,0 +1,17 @@
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file_membres'])) {
+    $file = $_FILES['file_membres']['tmp_name'];
+    if (($handle = fopen($file, "r")) !== FALSE) {
+        // On peut vider la table si on veut rafraîchir totalement la liste
+        // $pdo->exec("DELETE FROM membres"); 
+
+        while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+            if (!empty($data[0])) {
+                $stmt = $pdo->prepare("INSERT IGNORE INTO membres (nom) VALUES (?)");
+                $stmt->execute([trim($data[0])]);
+            }
+        }
+        fclose($handle);
+        echo "<script>alert('Liste des membres mise à jour !'); window.location.href='admin.php';</script>";
+    }
+}

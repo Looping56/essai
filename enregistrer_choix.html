@@ -1,0 +1,42 @@
+
+// 1. On vérifie que des données ont bien été envoyées
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['quantites'])) {
+    
+    // Pour l'instant, on utilise un ID membre de test (ID = 1)
+    // Plus tard, ce sera $_SESSION['membre_id'] après la connexion
+    $membre_id = 1; 
+
+    try {
+        // On commence par supprimer les anciens choix temporaires de ce membre 
+        // pour éviter les doublons s'il recommence sa saisie
+        $delete = $pdo->prepare("DELETE FROM commandes WHERE membre_id = ? AND statut = 'temporaire'");
+        $delete->execute([$membre_id]);
+
+        // 2. On prépare la requête d'insertion
+        $stmt = $pdo->prepare("INSERT INTO commandes (membre_id, piece_id, quantite, statut) VALUES (?, ?, ?, 'temporaire')");
+
+        $compteur = 0;
+        foreach ($_POST['quantites'] as $piece_id => $quantite) {
+            $quantite = intval($quantite); // Sécurité : on force en nombre entier
+            
+            // On n'enregistre que si la quantité est supérieure à 0
+            if ($quantite > 0) {
+                $stmt->execute([$membre_id, $piece_id, $quantite]);
+                $compteur++;
+            }
+        }
+
+        // 3. Message de succès et redirection
+        echo "<script>
+                alert('Bravo ! Vos $compteur choix ont été enregistrés.');
+                window.location.href='index.php';
+              </script>";
+
+    } catch (PDOException $e) {
+        die("Erreur lors de l'enregistrement : " . $e->getMessage());
+    }
+} else {
+    // Si on accède à ce fichier sans formulaire, on redirige
+    header('Location: index.php');
+    exit;
+}

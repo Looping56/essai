@@ -1,0 +1,104 @@
+// 1. Sécurité : Vérifier si l'admin est connecté
+if (!isset($_SESSION['admin_loge']) || $_SESSION['admin_loge'] !== true) {
+    header('Location: login.php');
+    exit;
+}
+
+// 2. Récupérer les états actuels (Ouvert/Fermé)
+$status = $pdo->query("SELECT * FROM config_systeme")->fetchAll(PDO::FETCH_KEY_PAIR);
+
+// 3. Calculer le total global des pièces commandées (Ta "Prise Totale")
+$total_query = $pdo->query("
+    SELECT p.reference, p.couleur, SUM(c.quantite) as total 
+    FROM commandes c 
+    JOIN pieces p ON c.piece_id = p.id 
+    GROUP BY p.id
+");
+$bilan_global = $total_query->fetchAll();
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Administration - Lego Manager</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
+        .admin-container { max-width: 900px; margin: auto; }
+        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h2 { border-bottom: 2px solid #eee; padding-bottom: 10px; color: #333; }
+        .btn { padding: 8px 15px; text-decoration: none; border-radius: 4px; color: white; display: inline-block; }
+        .btn-open { background: #27ae60; }
+        .btn-close { background: #c0392b; }
+        .btn-import { background: #2980b9; border: none; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #eee; }
+        .status-label { font-weight: bold; padding: 5px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <h1>Panneau d'Administration 🔒</h1>
+
+    <div class="card">
+        <h2>Contrôle des sessions</h2>
+        <p>
+            Choix des pièces : 
+            <span class="status-label" style="color: <?php echo ($status['etat_choix'] == '1' ? 'green' : 'red'); ?>">
+                <?php echo ($status['etat_choix'] == '1' ? 'OUVERT' : 'FERMÉ'); ?>
+            </span>
+            | <a href="toggle_status.php?action=choix&statut=<?php echo ($status['etat_choix'] == '1' ? '0' : '1'); ?>" class="btn <?php echo ($status['etat_choix'] == '1' ? 'btn-close' : 'btn-open'); ?>">
+                <?php echo ($status['etat_choix'] == '1' ? 'Fermer' : 'Ouvrir'); ?>
+            </a>
+        </p>
+    </div>
+
+    <div class="card">
+        <h2>Importation du catalogue (.csv)</h2>
+        <form action="import_pieces.php" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file_pieces" accept=".csv" required>
+            <button type="submit" class="btn btn-import">Importer les pièces</button>
+        </form>
+        <p><small>Format CSV attendu : reference ; couleur ; image.jpg</small></p>
+    </div>
+
+    <div class="card">
+        <h2>👥 Importation des Membres</h2>
+        <form action="import_membres.php" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file_membres" accept=".csv" required>
+            <button type="submit" class="btn btn-import">Charger la liste des membres</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Bilan Global (Commandes cumulées)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Référence</th>
+                    <th>Couleur</th>
+                    <th>Quantité Totale</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($bilan_global as $ligne): ?>
+                <tr>
+                    <td><?php echo $ligne['reference']; ?></td>
+                    <td><?php echo $ligne['couleur']; ?></td>
+                    <td><strong><?php echo $ligne['total']; ?></strong></td>
+                </tr>
+                <?php endforeach; ?>
+                <?php if(empty($bilan_global)) echo "<tr><td colspan='3'>Aucune commande pour le moment.</td></tr>"; ?>
+            </tbody>
+        </table>
+    </div>
+    <button onclick="window.print()" class="btn-print" style="background:#34495e; color:white; padding:10px; border:none; border-radius:4px; cursor:pointer; width:100%; margin-top:10px;">
+        🖨️ Imprimer mon récapitulatif (PDF)
+    </button>
+    <a href="export_global.php" class="btn" style="background:#8e44ad;">📥 Télécharger le fichier global pour LEGO (.csv)</a>
+    <p><a href="index.php">⬅ Retour au site</a> | <a href="logout.php" style="color:red;">Déconnexion</a></p>
+    
+</div>
+
+</body>
+</html>
