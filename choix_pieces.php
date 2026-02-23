@@ -1,0 +1,114 @@
+<?php
+session_start();
+require 'db.php';
+
+// 1. Vérifier si les choix sont ouverts dans la config
+$stmt = $pdo->query("SELECT valeur FROM config_systeme WHERE cle = 'etat_choix'");
+$est_ouvert = $stmt->fetchColumn();
+
+if ($est_ouvert == '0') {
+    die("<div style='text-align:center; padding:50px; font-family:sans-serif;'>
+            <h1>Accès Fermé 🔒</h1>
+            <p>L'administrateur n'a pas encore ouvert la session de choix.</p>
+            <a href='index.php'>Retour à l'accueil</a>
+         </div>");
+}
+
+// 2. Récupérer la liste des pièces du catalogue
+$query = $pdo->query("SELECT * FROM pieces");
+$pieces = $query->fetchAll();
+?>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Sélection des pièces - Lego Manager</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 12px; shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; border-bottom: 3px solid #f1c40f; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #ecf0f1; padding: 15px; text-align: left; }
+        td { padding: 15px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        .img-piece { width: 80px; height: 80px; object-fit: cover; border-radius: 5px; border: 1px solid #ddd; }
+        .input-qte { width: 60px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; text-align: center; }
+        .btn-save { background: #27ae60; color: white; border: none; padding: 15px 30px; border-radius: 6px; cursor: pointer; font-size: 1.1em; float: right; margin-top: 20px; }
+        .btn-save:hover { background: #219150; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Fais ton choix 🧱</h1>
+    <p>Sélectionne les pièces et indique la quantité souhaitée.</p>
+
+    <form action="enregistrer_choix.php" method="POST">
+        <div style="margin-bottom: 20px;">
+            <input type="text" id="searchBar" onkeyup="filterPieces()" placeholder="🔍 Rechercher une référence ou une couleur..." 
+            style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #ddd; font-size: 1em;">
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Référence & Couleur</th>
+                    <th>Quantité</th>
+                </tr>
+            </thead>
+            <script>
+                function filterPieces() {
+                // Déclarer les variables
+                    var input, filter, table, tr, td, i, txtValue;
+                    input = document.getElementById("searchBar");
+                    filter = input.value.toUpperCase();
+                    table = document.querySelector("table");
+                    tr = table.getElementsByTagName("tr");
+
+                // Boucle sur toutes les lignes du tableau (sauf l'entête)
+                    for (i = 1; i < tr.length; i++) {
+                // On cherche dans la colonne de la référence et couleur (colonne n°2)
+                    td = tr[i].getElementsByTagName("td")[1]; 
+                    if (td) {
+                        txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = ""; // On affiche
+                } else {
+                    tr[i].style.display = "none"; // On cache
+                    }
+            }
+        }
+}
+            </script>
+            <tbody>
+                <?php foreach ($pieces as $piece): ?>
+                <tr>
+                    <td>
+                        <img src="images/<?php echo htmlspecialchars($piece['image_path']); ?>" 
+                             class="img-piece" 
+                             alt="Lego Piece"
+                             onerror="this.src='https://via.placeholder.com/80?text=Lego';">
+                    </td>
+                    <td>
+                        <strong>Ref: <?php echo htmlspecialchars($piece['reference']); ?></strong><br>
+                        <span style="color: #7f8c8d;"><?php echo htmlspecialchars($piece['couleur']); ?></span>
+                    </td>
+                    <td>
+                        <input type="number" 
+                               name="quantites[<?php echo $piece['id']; ?>]" 
+                               value="0" min="0" 
+                               class="input-qte">
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <button type="submit" class="btn-save">Valider mes choix ✅</button>
+    </form>
+    <div style="clear:both;"></div>
+    <p><a href="index.php">⬅ Annuler et revenir</a></p>
+</div>
+
+</body>
+</html>

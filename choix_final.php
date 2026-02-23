@@ -1,0 +1,104 @@
+<?php
+session_start();
+require 'db.php';
+
+// 1. Vérifier si la session finale est ouverte
+$stmt = $pdo->query("SELECT valeur FROM config_systeme WHERE cle = 'etat_final'");
+$est_ouvert = $stmt->fetchColumn();
+
+if ($est_ouvert == '0') {
+    die("<div style='text-align:center; padding:50px; font-family:sans-serif;'>
+            <h1>Accès Fermé 🔒</h1>
+            <p>La période de validation finale n'est pas encore ouverte.</p>
+            <a href='index.php'>Retour</a>
+         </div>");
+}
+
+$membre_id = 1; // ID de test
+
+// 2. Récupérer les choix temporaires du membre
+$query = $pdo->prepare("
+    SELECT p.reference, p.couleur, c.quantite, p.image_path 
+    FROM commandes c 
+    JOIN pieces p ON c.piece_id = p.id 
+    WHERE c.membre_id = ? AND c.statut = 'temporaire'
+");
+$query->execute([$membre_id]);
+$mes_choix = $query->fetchAll();
+
+// 3. Traitement de la validation finale
+if (isset($_POST['confirmer_tout'])) {
+    $update = $pdo->prepare("UPDATE commandes SET statut = 'definitif' WHERE membre_id = ?");
+    $update->execute([$membre_id]);
+    echo "<script>alert('Commande validée définitivement !'); window.location.href='index.php';</script>";
+    exit;
+}
+?>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Validation Finale - Lego Manager</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
+        .container { max-width: 700px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .warning { background: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ffeeba; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        .btn-final { background: #e67e22; color: white; border: none; padding: 15px 25px; border-radius: 6px; cursor: pointer; font-size: 1.1em; width: 100%; margin-top: 20px; }
+        @media print {
+            /* Cache les boutons et les liens à l'impression */
+            .btn-final, a, .warning {
+                display: none !important;
+        }
+        /* Optimise le tableau pour le papier */
+        body { background: white; padding: 0; }
+        .container { box-shadow: none; border: none; width: 100%; max-width: 100%; }
+        h1 { font-size: 18pt; margin-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Récapitulatif de votre commande 🧾</h1>
+    
+    <?php if (empty($mes_choix)): ?>
+        <p>Vous n'avez sélectionné aucune pièce pour le moment.</p>
+        <a href="choix_pieces.php">Aller au catalogue</a>
+    <?php else: ?>
+        <div class="warning">
+            <strong>Attention :</strong> Une fois validée, vous ne pourrez plus modifier votre liste de pièces !
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Pièce</th>
+                    <th>Quantité</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($mes_choix as $choix): ?>
+                <tr>
+                    <td>
+                        <strong><?php echo $choix['reference']; ?></strong><br>
+                        <small><?php echo $choix['couleur']; ?></small>
+                    </td>
+                    <td>x <?php echo $choix['quantite']; ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <form method="POST">
+            <button type="submit" name="confirmer_tout" class="btn-final">Confirmer définitivement ma commande ✅</button>
+        </form>
+    <?php endif; ?>
+    
+    <p style="text-align:center;"><a href="index.php">Retour à l'accueil</a></p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+<?php
+session_start();
+require 'db.php';
+
+if (!isset($_SESSION['admin_loge'])) exit;
+
+// Préparation du fichier CSV
+header('Content-Type: text/csv; charset=utf-8');
+header('Content-Disposition: attachment; filename=commande_globale_lego_' . date('Y-m-d') . '.csv');
+
+$output = fopen('php://output', 'w');
+// Entêtes des colonnes
+fputcsv($output, ['Reference', 'Couleur', 'Quantite Totale'], ';');
+
+// Requête pour cumuler toutes les commandes DEFINITIVES
+$query = $pdo->query("
+    SELECT p.reference, p.couleur, SUM(c.quantite) as total 
+    FROM commandes c 
+    JOIN pieces p ON c.piece_id = p.id 
+    WHERE c.statut = 'definitif'
+    GROUP BY p.id
+");
+
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+    fputcsv($output, $row, ';');
+}
+
+fclose($output);
+exit;

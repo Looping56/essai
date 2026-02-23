@@ -1,0 +1,130 @@
+<?php
+session_start();
+require 'db.php';
+
+// Sécurité : Redirige vers la connexion si le membre n'est pas identifié
+        if (!isset($_SESSION['membre_id'])) {
+            header('Location: connexion_membre.php');
+        exit;
+        }
+
+// Récupération de la configuration (Ouvert/Fermé) depuis SQL
+$config = $pdo->query("SELECT cle, valeur FROM config_systeme")->fetchAll(PDO::FETCH_KEY_PAIR);
+$nom_membre = $_SESSION['membre_nom'];
+?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Lego Manager</title>
+    <style>
+        :root {
+            --lego-red: #d0011b;
+            --lego-blue: #0055ad;
+            --status-open: #27ae60;
+            --status-closed: #7f8c8d;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; color: #333; }
+        
+        /* Header */
+        header { background: var(--lego-red); color: white; padding: 25px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        header h1 { margin: 0; font-size: 1.5rem; }
+        
+        .container { max-width: 600px; margin: 30px auto; padding: 0 20px; }
+        .welcome { margin-bottom: 30px; text-align: center; }
+
+        /* Style des tuiles (Cards) */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 8px solid #ddd;
+        }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        
+        .card.active { border-left-color: var(--status-open); }
+        .card.locked { border-left-color: var(--status-closed); opacity: 0.8; cursor: not-allowed; }
+
+        .card-icon { font-size: 2.5rem; margin-right: 20px; }
+        .card-content { flex-grow: 1; }
+        .card-title { font-weight: bold; font-size: 1.1rem; display: block; }
+        .card-desc { font-size: 0.9rem; color: #666; }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-open { background: #eafaf1; color: var(--status-open); }
+        .badge-closed { background: #f2f4f4; color: var(--status-closed); }
+
+        .logout { display: block; text-align: center; margin-top: 40px; color: #e74c3c; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>LEGO COMMANDE 🧱</h1>
+</header>
+
+<div class="container">
+    <div class="welcome">
+        <h2>Bienvenue, <?php echo htmlspecialchars($nom_membre); ?></h2>
+        <p>Gérez vos pièces 526255, 123560 et bien d'autres.</p>
+    </div>
+
+    <?php if($config['etat_choix'] == '1'): ?>
+        <a href="choix_pieces.php" class="card active">
+            <div class="card-icon">🛒</div>
+            <div class="card-content">
+                <span class="card-title">Sélection des pièces</span>
+                <span class="card-desc">Composez votre liste de briques</span>
+            </div>
+            <span class="badge badge-open">Ouvert</span>
+        </a>
+    <?php else: ?>
+        <div class="card locked">
+            <div class="card-icon">🔒</div>
+            <div class="card-content">
+                <span class="card-title">Sélection des pièces</span>
+                <span class="card-desc">Session de commande fermée</span>
+            </div>
+            <span class="badge badge-closed">Fermé</span>
+        </div>
+    <?php endif; ?>
+
+    <?php if($config['etat_final'] == '1'): ?>
+        <a href="choix_final.php" class="card active" style="border-left-color: var(--lego-blue);">
+            <div class="card-icon">📋</div>
+            <div class="card-content">
+                <span class="card-title">Validation finale</span>
+                <span class="card-desc">Vérifiez et scellez votre commande</span>
+            </div>
+            <span class="badge badge-open">Prêt</span>
+        </a>
+    <?php else: ?>
+        <div class="card locked">
+            <div class="card-icon">⏳</div>
+            <div class="card-content">
+                <span class="card-title">Validation finale</span>
+                <span class="card-desc">En attente d'ouverture par l'admin</span>
+            </div>
+            <span class="badge badge-closed">Bientôt</span>
+        </div>
+    <?php endif; ?>
+
+    <a href="logout.php" class="logout">Déconnexion</a>
+</div>
+
+</body>
+</html>

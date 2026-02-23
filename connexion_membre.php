@@ -1,0 +1,43 @@
+<?php
+session_start();
+require 'db.php';
+
+if (isset($_POST['nom_membre'])) {
+    $nom = trim($_POST['nom_membre']);
+    $stmt = $pdo->prepare("SELECT id, nom FROM membres WHERE nom = ?");
+    $stmt->execute([$nom]);
+    $user = $stmt->fetch();
+
+    if ($user) {
+        $_SESSION['membre_id'] = $user['id'];
+        $_SESSION['membre_nom'] = $user['nom'];
+        header('Location: index.php');
+        exit;
+    } else {
+        $erreur = "Désolé, votre nom n'est pas dans la liste des membres autorisés.";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Identification Membre</title>
+    <style>
+        body { font-family: sans-serif; background: #2c3e50; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; }
+        .box { background: #34495e; padding: 40px; border-radius: 10px; text-align: center; }
+        input { padding: 10px; width: 250px; border-radius: 5px; border: none; margin-bottom: 10px; }
+        button { padding: 10px 20px; background: #f1c40f; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Entrez votre nom pour accéder aux commandes</h2>
+        <form method="POST">
+            <input type="text" name="nom_membre" placeholder="Prénom Nom" required><br>
+            <button type="submit">Vérifier mon accès</button>
+        </form>
+        <?php if(isset($erreur)) echo "<p style='color:#e74c3c'>$erreur</p>"; ?>
+    </div>
+</body>
+</html>
