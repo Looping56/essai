@@ -1,6 +1,6 @@
-<?php
+
 session_start();
-require 'db.php';
+require 'db.html';
 
 // 1. Vérifier si la session finale est ouverte
 $stmt = $pdo->query("SELECT valeur FROM config_systeme WHERE cle = 'etat_final'");
@@ -32,8 +32,7 @@ if (isset($_POST['confirmer_tout'])) {
     $update->execute([$membre_id]);
     echo "<script>alert('Commande validée définitivement !'); window.location.href='index.php';</script>";
     exit;
-}
-?>
+}
 
 <!DOCTYPE html>
 <html lang="fr">
