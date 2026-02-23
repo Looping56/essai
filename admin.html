@@ -26,11 +26,11 @@
         <h2>Contrôle des sessions</h2>
         <p>
             Choix des pièces : 
-            <span class="status-label" style="color: <?php echo ($status['etat_choix'] == '1' ? 'green' : 'red'); ?>">
+            <span class="status-label" style="color: <?html echo ($status['etat_choix'] == '1' ? 'green' : 'red'); ?>">
                 <?php echo ($status['etat_choix'] == '1' ? 'OUVERT' : 'FERMÉ'); ?>
             </span>
-            | <a href="toggle_status.php?action=choix&statut=<?php echo ($status['etat_choix'] == '1' ? '0' : '1'); ?>" class="btn <?php echo ($status['etat_choix'] == '1' ? 'btn-close' : 'btn-open'); ?>">
-                <?php echo ($status['etat_choix'] == '1' ? 'Fermer' : 'Ouvrir'); ?>
+            | <a href="toggle_status.php?action=choix&statut=<?html echo ($status['etat_choix'] == '1' ? '0' : '1'); ?>" class="btn <?php echo ($status['etat_choix'] == '1' ? 'btn-close' : 'btn-open'); ?>">
+                <?html echo ($status['etat_choix'] == '1' ? 'Fermer' : 'Ouvrir'); ?>
             </a>
         </p>
     </div>
@@ -78,10 +78,11 @@
         🖨️ Imprimer mon récapitulatif (PDF)
     </button>
     <a href="export_global.php" class="btn" style="background:#8e44ad;">📥 Télécharger le fichier global pour LEGO (.csv)</a>
-    <p><a href="index.php">⬅ Retour au site</a> | <a href="logout.php" style="color:red;">Déconnexion</a></p>
+    <p><a href="index.php">⬅ Retour au site</a> | <a href="logout.html" style="color:red;">Déconnexion</a></p>
     
 </div>
 
 </body>
 
 </html>
+
