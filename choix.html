@@ -2,85 +2,40 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maquette Test - Catalogue Lego</title>
+    <link rel="stylesheet" href="style.css">
+    <title>Catalogue</title>
     <style>
-        :root { --lego-red: #d0011b; --lego-blue: #0055ad; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; margin: 0; padding-bottom: 80px; }
-        
-        header { background: var(--lego-red); color: white; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        
-        .search-box { padding: 15px; background: white; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 100; }
-        #search { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #ccc; outline: none; box-sizing: border-box; }
-
-        .container { max-width: 600px; margin: auto; }
-        .piece-item { display: flex; align-items: center; background: white; margin: 10px; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .piece-img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; margin-right: 15px; background: #eee; }
-        .piece-info { flex-grow: 1; }
-        .piece-info b { display: block; font-size: 1.1em; color: #333; }
-        .piece-info span { color: #666; font-size: 0.9em; }
-
-        .qty-input { width: 60px; padding: 10px; border: 2px solid #ddd; border-radius: 8px; text-align: center; font-weight: bold; }
-
-        .footer { position: fixed; bottom: 0; width: 100%; background: white; padding: 15px; border-top: 2px solid #eee; text-align: center; }
-        .btn-validate { background: var(--lego-blue); color: white; border: none; padding: 15px 40px; border-radius: 30px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-validate:hover { background: #003d7a; transform: scale(1.05); }
+        .item { display: flex; align-items: center; background: white; margin-bottom: 10px; padding: 10px; border-radius: 10px; }
+        .item img { width: 60px; margin-right: 15px; }
+        .item-info { flex-grow: 1; text-align: left; }
     </style>
 </head>
 <body>
-
-<header>
-    <h1 id="welcomeTitle">Catalogue Lego</h1>
-</header>
-
-<div class="search-box">
-    <input type="text" id="search" placeholder="Rechercher une pièce (ex: 526255)..." onkeyup="filter()">
-</div>
-
-<div class="container" id="catalog">
-    <div class="piece-item">
-        <img src="images/526255.jpg" class="piece-img" onerror="this.src='https://via.placeholder.com/80?text=526255'">
-        <div class="piece-info">
-            <b>Réf: 526255</b>
-            <span>Couleur: Gris Anthracite</span>
+    <header><h1>Catalogue</h1></header>
+    <div class="container">
+        <input type="text" id="search" placeholder="Rechercher une pièce..." onkeyup="filter()">
+        
+        <div class="item">
+            <img src="images/526255.jpg" onerror="this.src='https://via.placeholder.com/60'">
+            <div class="item-info"><b>Réf: 526255</b><br><span>Gris</span></div>
+            <input type="number" style="width: 60px;" value="0" min="0">
         </div>
-        <input type="number" class="qty-input" value="0" min="0">
-    </div>
 
-    <div class="piece-item">
-        <img src="images/123560.jpg" class="piece-img" onerror="this.src='https://via.placeholder.com/80?text=123560'">
-        <div class="piece-info">
-            <b>Réf: 123560</b>
-            <span>Couleur: Bleu Azur</span>
+        <div class="item">
+            <img src="images/123560.jpg" onerror="this.src='https://via.placeholder.com/60'">
+            <div class="item-info"><b>Réf: 123560</b><br><span>Bleu</span></div>
+            <input type="number" style="width: 60px;" value="0" min="0">
         </div>
-        <input type="number" class="qty-input" value="0" min="0">
+
+        <button onclick="window.location.href='final.html'" style="margin-top: 20px; background: #27ae60;">Enregistrer mon choix</button>
     </div>
-    
-    </div>
-
-<div class="footer">
-    <button class="btn-validate" onclick="validerDemo()">Valider la commande ✅</button>
-</div>
-
-<script>
-    // Personnalisation du titre avec le nom stocké à la connexion
-    const nom = localStorage.getItem('membre_nom') || 'Membre du CA';
-    document.getElementById('welcomeTitle').innerText = "Catalogue de " + nom;
-
-    // Fonction de recherche instantanée
-    function filter() {
-        let val = document.getElementById('search').value.toLowerCase();
-        let items = document.querySelectorAll('.piece-item');
-        items.forEach(item => {
-            item.style.display = item.innerText.toLowerCase().includes(val) ? 'flex' : 'none';
-        });
-    }
-
-    // Simulation de validation
-    function validerDemo() {
-        alert("Félicitations " + nom + " !\n\nVotre sélection a été simulée avec succès.\n\nDans la version IONOS, ces données seront envoyées directement dans la base SQL.");
-    }
-</script>
-
+    <script>
+        function filter() {
+            let val = document.getElementById('search').value.toLowerCase();
+            document.querySelectorAll('.item').forEach(el => {
+                el.style.display = el.innerText.toLowerCase().includes(val) ? 'flex' : 'none';
+            });
+        }
+    </script>
 </body>
 </html>
