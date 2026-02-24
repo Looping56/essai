@@ -27,9 +27,14 @@
     </div>
 
     <script>
-        const user = localStorage.getItem('user_lego');
-        if(!user) window.location.href = 'index.html';
-        document.getElementById('nom-membre').innerText = "Bonjour " + user;
+        const sessionUser = localStorage.getItem('user'); // On cherche 'user'
+
+if (!sessionUser) {
+    // Si RIEN n'est trouvé, on retourne au login
+    window.location.replace('index.html');
+} else {
+    document.getElementById('nom-membre').innerText = "Bonjour " + sessionUser;
+}
 
         const c = localStorage.getItem('etat_choix');
         const f = localStorage.getItem('etat_final');
