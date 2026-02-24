@@ -10,7 +10,14 @@
         .item-info { flex-grow: 1; text-align: left; }
     </style>
 </head>
-<body>
+<body
+<div class="container"      style="margin-bottom: 0;">
+    <button onclick="window.location.href='dashboard.html'" 
+            style="background: #666; width: auto; padding: 8px 15px; margin-top: 10px;">
+        ← Retour au menu
+    </button>
+</div>
+
     <header><h1>Catalogue</h1></header>
     <div class="container">
         <input type="text" id="search" placeholder="Rechercher une pièce..." onkeyup="filter()">
