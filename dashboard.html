@@ -27,7 +27,7 @@
     </div>
 
     <script>
-        const sessionUser = localStorage.getItem('user'); // On cherche 'user'
+        const sessionUser = localStorage.getItem('user_lego'); // On cherche 'user'
 
 if (!sessionUser) {
     // Si RIEN n'est trouvé, on retourne au login
@@ -37,7 +37,7 @@ if (!sessionUser) {
 }
 
         const c = localStorage.getItem('etat_choix');
-        const f = localStorage.getItem('etat_final');
+        const f = localStorage.getItem('etat_choix_final');
 
         // Config bouton Choix
         const boxC = document.getElementById('box-choix');
@@ -53,7 +53,7 @@ if (!sessionUser) {
         // Config bouton Final
         const boxF = document.getElementById('box-final');
         if(f === '1') {
-            boxF.onclick = () => window.location.href='final.html';
+            boxF.onclick = () => window.location.href='choix_final.html';
             document.getElementById('statut-final').innerText = "Cliquez pour valider";
             boxF.style.borderColor = "#0055ad";
         } else {
