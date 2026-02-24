@@ -2,77 +2,64 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Administration - Demo Lego</title>
-    <style>
-        .admin-card { background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .control-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; }
-        .status-indicator { font-weight: bold; padding: 5px 10px; border-radius: 5px; }
-        .status-on { background: #e6fffa; color: #27ae60; }
-        .status-off { background: #fff5f5; color: #d0011b; }
-        .btn-toggle { width: auto; padding: 8px 15px; background: #333; }
-    </style>
+    <title>Administration - Lego</title>
 </head>
 <body>
-    <header><h1>Panneau Admin (Démo)</h1></header>
-
+    <header>ADMINISTRATION LEGO</header>
     <div class="container">
-        <div class="admin-card">
-            <h3>Contrôle des Accès Membres</h3>
-            <p style="font-size: 0.8em; color: #666; margin-bottom: 20px;">
-                Cliquer sur les boutons pour simuler l'ouverture/fermeture des sessions.
-            </p>
-
-            <div class="control-row">
-                <div>
-                    <strong>1. Choix des pièces</strong><br>
-                    <span id="label-choix" class="status-indicator">Chargement...</span>
-                </div>
-                <button class="btn-toggle" onclick="toggle('etat_choix')">Changer</button>
+        
+        <div class="card">
+            <h3>Accès des Membres</h3>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span>1. Choix des pièces</span>
+                <button id="btn-choix" onclick="toggle('etat_choix')">---</button>
             </div>
-
-            <div class="control-row">
-                <div>
-                    <strong>2. Validation Finale</strong><br>
-                    <span id="label-final" class="status-indicator">Chargement...</span>
-                </div>
-                <button class="btn-toggle" onclick="toggle('etat_final')">Changer</button>
+            <div style="display: flex; justify-content: space-between;">
+                <span>2. Validation finale</span>
+                <button id="btn-final" onclick="toggle('etat_final')">---</button>
             </div>
         </div>
 
-        <button onclick="window.location.href='dashboard.html'" style="background: var(--lego-blue);">
-            Voir le résultat (Dashboard)
-        </button>
+        <div class="card">
+            <h3>Importation des données</h3>
+            <label>📁 Fichier Membres (CSV)</label>
+            <input type="file" accept=".csv" onchange="simulerImport('Membres')">
+            
+            <label>📁 Fichier Catalogue (CSV)</label>
+            <input type="file" accept=".csv" onchange="simulerImport('Catalogue')">
+            <div id="msg-import" style="color: green; font-size: 0.9em; margin-top: 10px;"></div>
+        </div>
+
+        <button class="btn-blue" onclick="window.location.href='dashboard.html'">Voir le site comme un membre</button>
+        <a href="index.html" class="logout-link">Quitter l'administration</a>
     </div>
 
     <script>
-        // Initialisation des valeurs par défaut si elles n'existent pas
-        if (localStorage.getItem('etat_choix') === null) localStorage.setItem('etat_choix', '0');
-        if (localStorage.getItem('etat_final') === null) localStorage.setItem('etat_final', '0');
-
-        function updateUI() {
-            const choix = localStorage.getItem('etat_choix');
-            const final = localStorage.getItem('etat_final');
-
-            // Mise à jour visuelle Choix 1
-            const lblChoix = document.getElementById('label-choix');
-            lblChoix.innerText = (choix === '1') ? "OUVERT" : "FERMÉ";
-            lblChoix.className = "status-indicator " + (choix === '1' ? "status-on" : "status-off");
-
-            // Mise à jour visuelle Choix 2
-            const lblFinal = document.getElementById('label-final');
-            lblFinal.innerText = (final === '1') ? "OUVERT" : "FERMÉ";
-            lblFinal.className = "status-indicator " + (final === '1' ? "status-on" : "status-off");
-        }
-
         function toggle(key) {
-            const current = localStorage.getItem(key);
-            localStorage.setItem(key, current === '1' ? '0' : '1');
-            updateUI();
+            let etat = localStorage.getItem(key) === '1' ? '0' : '1';
+            localStorage.setItem(key, etat);
+            chargerEtats();
         }
 
-        updateUI();
+        function chargerEtats() {
+            const c = localStorage.getItem('etat_choix') || '0';
+            const f = localStorage.getItem('etat_final') || '0';
+            
+            document.getElementById('btn-choix').innerText = (c === '1' ? 'OUVERT' : 'FERMÉ');
+            document.getElementById('btn-choix').style.background = (c === '1' ? '#27ae60' : '#d0011b');
+            document.getElementById('btn-choix').style.color = "white";
+
+            document.getElementById('btn-final').innerText = (f === '1' ? 'OUVERT' : 'FERMÉ');
+            document.getElementById('btn-final').style.background = (f === '1' ? '#27ae60' : '#d0011b');
+            document.getElementById('btn-final').style.color = "white";
+        }
+
+        function simulerImport(type) {
+            document.getElementById('msg-import').innerText = "✅ Fichier " + type + " analysé avec succès !";
+        }
+
+        chargerEtats();
     </script>
 </body>
 </html>
