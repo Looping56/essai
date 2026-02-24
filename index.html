@@ -20,21 +20,15 @@
 
     <script>
         function login() {
-            const name = document.getElementById('username').value;
-            if (name.trim() !== "") {
-                // On simule la session PHP avec le localStorage
-                localStorage.setItem('user_lego', name);
-                // Redirection vers le tableau de bord
-                window.location.href = 'dashboard.html';
-            } else {
-                alert("Veuillez entrer un nom pour la démonstration.");
-            }
-        }
+    const name = document.getElementById('username').value;
+    if (name.trim() !== "") {
+        localStorage.setItem('user', name); // On enregistre 'user'
+        window.location.replace('dashboard.html'); // .replace évite de revenir en arrière
+    }
+}
+// ATTENTION : Ne mets pas de redirection automatique ici pour ton test CA, 
+// sinon tu ne pourras plus jamais revenir sur la page login pour changer de nom.
 
-        // Si l'utilisateur est déjà "connecté", on l'envoie direct au dashboard
-        if (localStorage.getItem('user_lego')) {
-            window.location.href = 'dashboard.html';
-        }
     </script>
 </body>
 </html>
