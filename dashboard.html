@@ -37,6 +37,33 @@
         document.getElementById('userNameDisplay').innerText = user;
     }
  document.getElementById('welcome').innerText = "Bonjour, " + localStorage.getItem('user');
-    </script>
+   <script>
+    const user = localStorage.getItem('user_lego');
+    if (!user) window.location.href = 'index.html';
+    document.getElementById('userNameDisplay').innerText = user;
+
+    // --- LOGIQUE DYNAMIQUE DES BOUTONS ---
+    const etatChoix = localStorage.getItem('etat_choix');
+    const etatFinal = localStorage.getItem('etat_final');
+
+    // Gestion du bouton 1 (Choix des pièces)
+    const cardChoix = document.getElementById('card-choix'); // Ajoute cet ID à ta div/bouton
+    if (etatChoix === '1') {
+        cardChoix.innerHTML = "<h4>Sélection</h4><p>🟢 OUVERT</p><button onclick='location.href=\"choix.html\"'>Entrer</button>";
+    } else {
+        cardChoix.innerHTML = "<h4>Sélection</h4><p>🔒 FERMÉ</p><button disabled>Indisponible</button>";
+        cardChoix.style.opacity = "0.6";
+    }
+
+    // Gestion du bouton 2 (Final)
+    const cardFinal = document.getElementById('card-final'); // Ajoute cet ID à ta div/bouton
+    if (etatFinal === '1') {
+        cardFinal.innerHTML = "<h4>Validation Final</h4><p>🔵 PRÊT</p><button onclick='location.href=\"final.html\"'>Valider</button>";
+    } else {
+        cardFinal.innerHTML = "<h4>Validation Final</h4><p>🔒 FERMÉ</p><button disabled>Attente Admin</button>";
+        cardFinal.style.opacity = "0.6";
+    }
+
+  </script>
 </body>
 </html>
