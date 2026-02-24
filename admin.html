@@ -2,88 +2,77 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Administration - Lego Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Administration - Demo Lego</title>
     <style>
-        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
-        .admin-container { max-width: 900px; margin: auto; }
-        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        h2 { border-bottom: 2px solid #eee; padding-bottom: 10px; color: #333; }
-        .btn { padding: 8px 15px; text-decoration: none; border-radius: 4px; color: white; display: inline-block; }
-        .btn-open { background: #27ae60; }
-        .btn-close { background: #c0392b; }
-        .btn-import { background: #2980b9; border: none; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #eee; }
-        .status-label { font-weight: bold; padding: 5px; border-radius: 3px; }
+        .admin-card { background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .control-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; }
+        .status-indicator { font-weight: bold; padding: 5px 10px; border-radius: 5px; }
+        .status-on { background: #e6fffa; color: #27ae60; }
+        .status-off { background: #fff5f5; color: #d0011b; }
+        .btn-toggle { width: auto; padding: 8px 15px; background: #333; }
     </style>
 </head>
 <body>
+    <header><h1>Panneau Admin (Démo)</h1></header>
 
-<div class="admin-container">
-    <h1>Panneau d'Administration 🔒</h1>
+    <div class="container">
+        <div class="admin-card">
+            <h3>Contrôle des Accès Membres</h3>
+            <p style="font-size: 0.8em; color: #666; margin-bottom: 20px;">
+                Cliquer sur les boutons pour simuler l'ouverture/fermeture des sessions.
+            </p>
 
-    <div class="card">
-        <h2>Contrôle des sessions</h2>
-        <p>
-            Choix des pièces : 
-            <span class="status-label" style="color: <?html echo ($status['etat_choix'] == '1' ? 'green' : 'red'); ?>">
-                <?php echo ($status['etat_choix'] == '1' ? 'OUVERT' : 'FERMÉ'); ?>
-            </span>
-            | <a href="toggle_status.php?action=choix&statut=<?html echo ($status['etat_choix'] == '1' ? '0' : '1'); ?>" class="btn <?php echo ($status['etat_choix'] == '1' ? 'btn-close' : 'btn-open'); ?>">
-                <?html echo ($status['etat_choix'] == '1' ? 'Fermer' : 'Ouvrir'); ?>
-            </a>
-        </p>
+            <div class="control-row">
+                <div>
+                    <strong>1. Choix des pièces</strong><br>
+                    <span id="label-choix" class="status-indicator">Chargement...</span>
+                </div>
+                <button class="btn-toggle" onclick="toggle('etat_choix')">Changer</button>
+            </div>
+
+            <div class="control-row">
+                <div>
+                    <strong>2. Validation Finale</strong><br>
+                    <span id="label-final" class="status-indicator">Chargement...</span>
+                </div>
+                <button class="btn-toggle" onclick="toggle('etat_final')">Changer</button>
+            </div>
+        </div>
+
+        <button onclick="window.location.href='dashboard.html'" style="background: var(--lego-blue);">
+            Voir le résultat (Dashboard)
+        </button>
     </div>
 
-    <div class="card">
-        <h2>Importation du catalogue (.csv)</h2>
-        <form action="import_pieces.php" method="POST" enctype="multipart/form-data">
-            <input type="file" name="file_pieces" accept=".csv" required>
-            <button type="submit" class="btn btn-import">Importer les pièces</button>
-        </form>
-        <p><small>Format CSV attendu : reference ; couleur ; image.jpg</small></p>
-    </div>
+    <script>
+        // Initialisation des valeurs par défaut si elles n'existent pas
+        if (localStorage.getItem('etat_choix') === null) localStorage.setItem('etat_choix', '0');
+        if (localStorage.getItem('etat_final') === null) localStorage.setItem('etat_final', '0');
 
-    <div class="card">
-        <h2>👥 Importation des Membres</h2>
-        <form action="import_membres.php" method="POST" enctype="multipart/form-data">
-            <input type="file" name="file_membres" accept=".csv" required>
-            <button type="submit" class="btn btn-import">Charger la liste des membres</button>
-        </form>
-    </div>
+        function updateUI() {
+            const choix = localStorage.getItem('etat_choix');
+            const final = localStorage.getItem('etat_final');
 
-    <div class="card">
-        <h2>Bilan Global (Commandes cumulées)</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Référence</th>
-                    <th>Couleur</th>
-                    <th>Quantité Totale</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($bilan_global as $ligne): ?>
-                <tr>
-                    <td><?php echo $ligne['reference']; ?></td>
-                    <td><?php echo $ligne['couleur']; ?></td>
-                    <td><strong><?php echo $ligne['total']; ?></strong></td>
-                </tr>
-                <?php endforeach; ?>
-                <?php if(empty($bilan_global)) echo "<tr><td colspan='3'>Aucune commande pour le moment.</td></tr>"; ?>
-            </tbody>
-        </table>
-    </div>
-    <button onclick="window.print()" class="btn-print" style="background:#34495e; color:white; padding:10px; border:none; border-radius:4px; cursor:pointer; width:100%; margin-top:10px;">
-        🖨️ Imprimer mon récapitulatif (PDF)
-    </button>
-    <a href="export_global.html" class="btn" style="background:#8e44ad;">📥 Télécharger le fichier global pour LEGO (.csv)</a>
-    <p><a href="index.html">⬅ Retour au site</a> | <a href="logout.html" style="color:red;">Déconnexion</a></p>
-    
-</div>
+            // Mise à jour visuelle Choix 1
+            const lblChoix = document.getElementById('label-choix');
+            lblChoix.innerText = (choix === '1') ? "OUVERT" : "FERMÉ";
+            lblChoix.className = "status-indicator " + (choix === '1' ? "status-on" : "status-off");
 
+            // Mise à jour visuelle Choix 2
+            const lblFinal = document.getElementById('label-final');
+            lblFinal.innerText = (final === '1') ? "OUVERT" : "FERMÉ";
+            lblFinal.className = "status-indicator " + (final === '1' ? "status-on" : "status-off");
+        }
+
+        function toggle(key) {
+            const current = localStorage.getItem(key);
+            localStorage.setItem(key, current === '1' ? '0' : '1');
+            updateUI();
+        }
+
+        updateUI();
+    </script>
 </body>
-
 </html>
-
-
