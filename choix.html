@@ -43,6 +43,23 @@
                 el.style.display = el.innerText.toLowerCase().includes(val) ? 'flex' : 'none';
             });
         }
+function valider() {
+    let commandes = [];
+    // On récupère chaque ligne de pièce
+    document.querySelectorAll('.item').forEach(item => {
+        let ref = item.querySelector('b').innerText;
+        let qte = item.querySelector('.qty').value;
+        
+        if (parseInt(qte) > 0) {
+            commandes.push({ reference: ref, quantite: qte });
+        }
+    });
+
+    // On enregistre la liste dans le navigateur
+    localStorage.setItem('ma_commande', JSON.stringify(commandes));
+    window.location.href = 'final.html';
+}
+
     </script>
 </body>
 </html>
