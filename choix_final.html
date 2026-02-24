@@ -3,16 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
-    <title>Succès</title>
+    <title>Validation - Lego</title>
 </head>
 <body>
-    <div class="container" style="margin-top: 100px;">
-        <div class="card">
-            <h1 style="color: #27ae60;">✓</h1>
-            <h2>Commande enregistrée !</h2>
-            <p>Ceci est une simulation pour le C.A. Sur IONOS, ces données iront en base SQL.</p>
-            <button onclick="window.location.href='index.html'">Retour</button>
+    <header>VALIDATION FINALE</header>
+    <div class="container">
+        <div class="card" style="text-align: center;">
+            <div style="font-size: 50px; color: var(--lego-green);">✅</div>
+            <h2>Félicitations !</h2>
+            <p>Votre commande de pièces a été enregistrée pour le C.A.</p>
+            
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+            
+            <button class="btn-blue" onclick="window.location.href='dashboard.html'">
+                Retour au Dashboard
+            </button>
         </div>
     </div>
+
+    <script>
+        // Sécurité : si on arrive ici sans être connecté
+        if (!localStorage.getItem('user')) {
+            window.location.replace('index.html');
+        }
+    </script>
 </body>
 </html>
