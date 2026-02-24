@@ -3,67 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
-    <title>Dashboard</title>
+    <title>Mon Espace Lego</title>
 </head>
 <body>
-    <header><h1>Dashboard</h1></header>
+    <header>LEGO MANAGER</header>
     <div class="container">
-        <h3 id="welcome"></h3>
-        <div class="card" style="margin-bottom: 20px; border-left: 5px solid green;">
-            <h4>Session de commande</h4>
-            <p>Statut : 🟢 OUVERT</p>
-            <button onclick="window.location.href='choix.html'">Accéder au catalogue</button>
-        </div>
-        <div class="card" style="opacity: 0.6; border-left: 5px solid gray;">
-            <h4>Validation Finale</h4>
-            <p>Statut : 🔒 FERMÉ</p>
-            <button disabled>Indisponible</button>
+        <div class="card">
+            <h2 id="nom-membre">Bonjour !</h2>
+            <p>Statut actuel des sessions :</p>
+            
+            <div id="box-choix" class="card" style="cursor: pointer; border: 2px solid transparent;">
+                <b>🛒 Sélection des pièces</b><br>
+                <small id="statut-choix"></small>
+            </div>
+
+            <div id="box-final" class="card" style="cursor: pointer; border: 2px solid transparent;">
+                <b>📝 Validation finale</b><br>
+                <small id="statut-final"></small>
+            </div>
+
+            <a href="index.html" onclick="localStorage.removeItem('user')" class="logout-link">Se déconnecter</a>
         </div>
     </div>
+
     <script>
-       <div class="container">
-    <h3>Bonjour, <span id="userNameDisplay"></span> !</h3>
-    <a href="logout.html" style="color: #d0011b; text-decoration: none; font-weight: bold; display: block; margin-top: 30px; text-align: center;">
-        ✖ Se déconnecter
-    </a>
-</div>
+        const user = localStorage.getItem('user');
+        if(!user) window.location.href = 'index.html';
+        document.getElementById('nom-membre').innerText = "Bonjour " + user;
 
-    // Récupérer le nom pour l'affichage
-    const user = localStorage.getItem('user_lego');
-    if (!user) {
-        // Sécurité : si pas de nom, on renvoie au login
-        window.location.href = 'index.html';
-    } else {
-        document.getElementById('userNameDisplay').innerText = user;
-    }
- document.getElementById('welcome').innerText = "Bonjour, " + localStorage.getItem('user');
-   <script>
-    const user = localStorage.getItem('user_lego');
-    if (!user) window.location.href = 'index.html';
-    document.getElementById('userNameDisplay').innerText = user;
+        const c = localStorage.getItem('etat_choix');
+        const f = localStorage.getItem('etat_final');
 
-    // --- LOGIQUE DYNAMIQUE DES BOUTONS ---
-    const etatChoix = localStorage.getItem('etat_choix');
-    const etatFinal = localStorage.getItem('etat_final');
+        // Config bouton Choix
+        const boxC = document.getElementById('box-choix');
+        if(c === '1') {
+            boxC.onclick = () => window.location.href='choix.html';
+            document.getElementById('statut-choix').innerText = "Cliquez pour entrer";
+            boxC.style.borderColor = "#27ae60";
+        } else {
+            document.getElementById('statut-choix').innerText = "Session fermée";
+            boxC.style.opacity = "0.5";
+        }
 
-    // Gestion du bouton 1 (Choix des pièces)
-    const cardChoix = document.getElementById('card-choix'); // Ajoute cet ID à ta div/bouton
-    if (etatChoix === '1') {
-        cardChoix.innerHTML = "<h4>Sélection</h4><p>🟢 OUVERT</p><button onclick='location.href=\"choix.html\"'>Entrer</button>";
-    } else {
-        cardChoix.innerHTML = "<h4>Sélection</h4><p>🔒 FERMÉ</p><button disabled>Indisponible</button>";
-        cardChoix.style.opacity = "0.6";
-    }
-
-    // Gestion du bouton 2 (Final)
-    const cardFinal = document.getElementById('card-final'); // Ajoute cet ID à ta div/bouton
-    if (etatFinal === '1') {
-        cardFinal.innerHTML = "<h4>Validation Final</h4><p>🔵 PRÊT</p><button onclick='location.href=\"final.html\"'>Valider</button>";
-    } else {
-        cardFinal.innerHTML = "<h4>Validation Final</h4><p>🔒 FERMÉ</p><button disabled>Attente Admin</button>";
-        cardFinal.style.opacity = "0.6";
-    }
-
-  </script>
+        // Config bouton Final
+        const boxF = document.getElementById('box-final');
+        if(f === '1') {
+            boxF.onclick = () => window.location.href='final.html';
+            document.getElementById('statut-final').innerText = "Cliquez pour valider";
+            boxF.style.borderColor = "#0055ad";
+        } else {
+            document.getElementById('statut-final').innerText = "Bientôt disponible";
+            boxF.style.opacity = "0.5";
+        }
+    </script>
 </body>
 </html>
