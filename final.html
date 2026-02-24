@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <title>Validation - Lego</title>
+</head>
+<body>
+    <header>VALIDATION FINALE</header>
+    <div class="container">
+        <div class="card" style="text-align: center;">
+            <div style="font-size: 50px; color: var(--lego-green);">✅</div>
+            <h2>Félicitations !</h2>
+            <p>Votre commande de pièces a été enregistrée pour le C.A.</p>
+            
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+            
+            <button class="btn-blue" onclick="window.location.href='dashboard.html'">
+                Retour au Dashboard
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Sécurité : si on arrive ici sans être connecté
+        if (!localStorage.getItem('user')) {
+            window.location.replace('index.html');
+        }
+    </script>
+</body>
+</html>
