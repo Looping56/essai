@@ -22,12 +22,12 @@
                 <small id="statut-final"></small>
             </div>
 
-            <a href="index.html" onclick="localStorage.removeItem('user')" class="logout-link">Se déconnecter</a>
+            <a href="index.html" onclick="localStorage.removeItem('user_lego')" class="logout-link">Se déconnecter</a>
         </div>
     </div>
 
     <script>
-        const user = localStorage.getItem('user');
+        const user = localStorage.getItem('user_lego');
         if(!user) window.location.href = 'index.html';
         document.getElementById('nom-membre').innerText = "Bonjour " + user;
 
