@@ -22,12 +22,12 @@
                 <small id="statut-final"></small>
             </div>
 
-            <a href="index.html" onclick="localStorage.removeItem('user_lego')" class="logout-link">Se déconnecter</a>
+            <a href="index.html" onclick="localStorage.removeItem('user')" class="logout-link">Se déconnecter</a>
         </div>
     </div>
 
     <script>
-        const sessionUser = localStorage.getItem('user_lego'); // On cherche 'user'
+        const sessionUser = localStorage.getItem('user'); // On cherche 'user'
 
 if (!sessionUser) {
     // Si RIEN n'est trouvé, on retourne au login
